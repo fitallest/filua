@@ -476,6 +476,7 @@
                             <div class="w-32 h-32 md:w-40 md:h-40 bg-white mx-auto mb-4 md:mb-6 p-2 rounded-lg pointer-events-none">
                                 <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/filua/main/image/maqrnatphi.jpg&w=300&output=webp&q=100" alt="QR Nhất Phi" class="w-full h-full object-contain">
                             </div>
+                            <!-- Bank info can be selected to copy -->
                             <p class="text-[10px] md:text-xs uppercase tracking-widest mb-1 text-gold">Vietinbank</p>
                             <p class="font-bold text-lg md:text-xl tracking-wider mb-1">1018 7236 0428</p>
                             <p class="text-sm md:text-base font-script">Cao Nhất Phi</p>
@@ -514,6 +515,19 @@
             <p class="text-[8px] md:text-xs opacity-50 uppercase tracking-[0.2em] md:tracking-[0.3em] font-medium font-sans text-cream-bg">Crafted with passion for the big day © 2026</p>
         </div>
     </footer>
+
+    <!-- MODAL EASTER EGG -->
+    <div id="easter-egg-modal" class="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm hidden flex-col items-center justify-center p-4">
+        <div class="bg-white p-2 rounded-xl relative w-full max-w-3xl shadow-[0_0_50px_rgba(212,175,55,0.3)]">
+            <button id="close-modal" class="absolute -top-4 -right-4 bg-gold text-white p-2 rounded-full hover:bg-forest-green transition-colors z-10 cursor-pointer">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <div class="aspect-video w-full rounded-lg overflow-hidden bg-black">
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0" title="YouTube" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <p class="text-center font-script text-2xl text-forest-green mt-4 mb-2 select-none">Bị lừa rồi nha! 😂</p>
+        </div>
+    </div>
 
     <script>
         const initWeddingApp = () => {
@@ -561,17 +575,44 @@
                 }, 50); 
             };
 
-            // GIẢI PHÁP CHỐNG "TREO" CHO MESSENGER IN-APP BROWSER
+            // XỬ LÝ SỰ KIỆN CHẠM: ƯU TIÊN MEDIA LÊN HÀNG ĐẦU
             const unlockAction = (e) => {
-                if (e) e.preventDefault(); 
+                if (e && e.type !== 'touchend') e.preventDefault(); 
                 if (isUnlocked) return; 
+                isUnlocked = true; // Khóa double-click ngay lập tức
                 
+                // BƯỚC 1: KÍCH NỔ ÂM THANH NGAY TỨC KHẮC
+                if (audio) {
+                    audio.volume = 0; 
+                    const playPromise = audio.play(); // Đánh thức Audio API ngay khoảnh khắc ngón tay chạm
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            // Cấp quyền phát thành công -> Tua và hiện icon nhạc
+                            audio.currentTime = 70; 
+                            isPlaying = true;
+                            const musicIcon = document.getElementById('music-icon');
+                            if(musicIcon) {
+                                musicIcon.setAttribute('data-lucide', 'music');
+                                lucide.createIcons();
+                            }
+                            fadeInAudio(); 
+                        }).catch(err => {
+                            console.log("Autoplay blocked by strict browser policy:", err);
+                            isPlaying = false;
+                            const musicIcon = document.getElementById('music-icon');
+                            if(musicIcon) {
+                                musicIcon.setAttribute('data-lucide', 'volume-x');
+                                lucide.createIcons();
+                            }
+                        });
+                    }
+                }
+
+                // BƯỚC 2: XỬ LÝ GIAO DIỆN (Thực thi sau khi luồng Media đã được nhả)
                 const sealImg = document.getElementById('seal-img');
                 if(sealImg) sealImg.style.opacity = '0.5';
 
-                // BƯỚC 1: MỞ THIỆP NGAY LẬP TỨC, KHÔNG ĐỢI NHẠC
-                isUnlocked = true;
-                lucide.createIcons();
                 window.scrollTo(0, 0);
                 document.body.classList.remove('overflow-hidden');
                 
@@ -581,34 +622,12 @@
                 setTimeout(() => { 
                     if(preloader && preloader.parentNode) preloader.remove(); 
                 }, 1000); 
-
-                // BƯỚC 2: XỬ LÝ NHẠC CHẠY NGẦM (Không chặn UI nếu bị lỗi)
-                if (audio) {
-                    audio.volume = 0; 
-                    const playPromise = audio.play();
-                    
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            // Messenger cho phép phát nhạc
-                            audio.currentTime = 70; 
-                            isPlaying = true;
-                            const musicIcon = document.getElementById('music-icon');
-                            if(musicIcon) musicIcon.setAttribute('data-lucide', 'music');
-                            fadeInAudio(); 
-                        }).catch(err => {
-                            // Messenger chặn autoplay, hiện nút tắt loa để khách tự bật
-                            console.log("In-App Browser blocked autoplay:", err);
-                            isPlaying = false;
-                            const musicIcon = document.getElementById('music-icon');
-                            if(musicIcon) musicIcon.setAttribute('data-lucide', 'volume-x');
-                        });
-                    }
-                }
             };
 
             if(unlockBtn) {
                 unlockBtn.addEventListener('click', unlockAction);
-                unlockBtn.addEventListener('touchstart', unlockAction, { passive: false });
+                // SỬA LỖI: Dùng touchend cho các thiết bị Apple để tăng tỷ lệ được cấp quyền Media
+                unlockBtn.addEventListener('touchend', unlockAction, { passive: false });
             }
 
             if(musicBtn) {
@@ -639,7 +658,6 @@
                 });
             }
 
-            // ... (Phần code lặt vặt giữ nguyên, đảm bảo độ ổn định)
             const flipCards = document.querySelectorAll('.flip-card');
             flipCards.forEach(card => {
                 card.addEventListener('click', function(e) {
