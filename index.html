@@ -13,7 +13,6 @@
     <meta property="og:url" content="https://fitallest.github.io/-nh/"> 
     <meta property="og:title" content="Thiệp cưới | Nhất Phi & Dương Lụa">
     <meta property="og:description" content="We are getting married! Trân trọng kính mời bạn đến dự buổi tiệc chung vui. Chạm để mở thiệp.">
-    <!-- Fix lỗi Zalo Cache: Dùng CDN trung gian để ép Zalo nhận diện hình -->
     <meta property="og:image" content="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/3218.JPG&w=800&output=jpg">
     
     <!-- Twitter -->
@@ -64,13 +63,20 @@
         html { scroll-behavior: smooth; overflow-x: hidden; }
         body { 
             background-color: #FDFBF7; 
-            /* Fix URL chứa khoảng trắng (Paper Texture) */
             background-image: url('https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/Background%20Paper%20Texture.png'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             overflow-x: hidden; 
             -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        /* Fix lỗi Viewport trên iOS Safari cũ */
+        .min-h-dvh {
+            min-height: 100vh; /* Fallback */
+            min-height: calc(var(--vh, 1vh) * 100);
         }
 
         .text-gold-glitter {
@@ -114,12 +120,12 @@
             100% { transform: translateY(0px) rotate(0deg); }
         }
 
-        /* 3D Flip Card */
-        .flip-card { perspective: 1000px; height: 320px; -webkit-tap-highlight-color: transparent; }
+        /* 3D Flip Card - Thêm tiền tố webkit chống lỗi iOS */
+        .flip-card { -webkit-perspective: 1000px; perspective: 1000px; height: 320px; -webkit-tap-highlight-color: transparent; }
         .flip-card-inner { 
             position: relative; width: 100%; height: 100%; text-align: center; 
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
-            transform-style: preserve-3d; 
+            -webkit-transform-style: preserve-3d; transform-style: preserve-3d; 
         }
         @media (hover: hover) and (pointer: fine) {
             .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
@@ -177,10 +183,10 @@
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .wish-card { display: inline-flex; flex-direction: column; background: #fff; border: 1px solid rgba(43,76,62,0.1); border-radius: 8px; padding: 1rem 1.5rem; margin-right: 2rem; min-width: 300px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); white-space: normal; vertical-align: top;}
 
-        /* Nâng cấp hiệu ứng thở (Breathe) cho con dấu */
+        /* Hiệu ứng thở (Breathe) cho con dấu */
         @keyframes breathe {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(232,184,29,0.2)); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(232,184,29,0.6)); }
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(232,184,29,0.2)); -webkit-filter: drop-shadow(0 0 10px rgba(232,184,29,0.2)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(232,184,29,0.6)); -webkit-filter: drop-shadow(0 0 25px rgba(232,184,29,0.6)); }
         }
         .animate-breathe { animation: breathe 3s ease-in-out infinite; }
     </style>
@@ -188,37 +194,34 @@
 <body class="font-sans text-gray-800 antialiased selection:bg-forest-green selection:text-white relative overflow-hidden">
 
     <!-- PRELOADER -->
-    <div id="preloader" class="fixed inset-0 z-[10000] bg-forest-dark flex flex-col items-center justify-center transition-all duration-1000 overflow-hidden">
-        <!-- Fix lỗi %20 khoảng trắng cho vân giấy -->
+    <div id="preloader" class="fixed inset-0 z-[10000] bg-forest-dark flex flex-col items-center justify-center transition-all duration-1000 overflow-hidden select-none">
         <div class="absolute inset-0 opacity-20 bg-[url('https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/Background%20Paper%20Texture.png')] bg-cover mix-blend-overlay"></div>
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30"></div>
         
         <div class="relative z-10 flex flex-col items-center">
-            <h2 class="font-script text-5xl md:text-7xl text-gold mb-16 opacity-90 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-wider">You're invited</h2>
+            <h2 class="font-script text-5xl md:text-7xl text-gold mb-16 opacity-90 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-wider pointer-events-none">You're invited</h2>
             
             <div class="relative flex justify-center items-center mt-4 mb-4">
                 <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/hoa2.png" class="absolute w-64 md:w-80 opacity-90 rotate-[-15deg] pointer-events-none drop-shadow-md transition-transform duration-1000" alt="Floral Decor">
                 
-                <!-- Nút bấm - Thêm id img bên trong để làm hiệu ứng loading mờ -->
                 <div id="unlock-btn" class="w-36 h-36 md:w-48 md:h-48 cursor-pointer relative z-20 flex items-center justify-center rounded-full animate-breathe">
-                    <!-- Fix lỗi URL Wax Seal -->
                     <img id="seal-img" src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/Wax%20Seal.png" alt="Mở thiệp" class="w-full h-full object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)] hover:scale-105 transition-all duration-300">
                 </div>
             </div>
             
-            <p class="mt-20 text-cream-bg font-serif text-xs md:text-sm tracking-[0.5em] uppercase opacity-80 animate-pulse drop-shadow-md">Chạm để mở thiệp</p>
+            <p class="mt-20 text-cream-bg font-serif text-xs md:text-sm tracking-[0.5em] uppercase opacity-80 animate-pulse drop-shadow-md pointer-events-none">Chạm để mở thiệp</p>
         </div>
     </div>
 
     <div class="fixed inset-0 floral-bg pointer-events-none z-[-1]"></div>
 
     <!-- Music Button -->
-    <button id="music-btn" class="fixed bottom-6 right-6 z-50 bg-white p-3 md:p-4 rounded-full shadow-[0_4px_20px_rgba(43,76,62,0.3)] border border-forest-green/20 text-forest-green hover:bg-forest-green hover:text-white transition-all flex items-center justify-center group opacity-0 translate-y-10">
+    <button id="music-btn" class="fixed bottom-6 right-6 z-50 bg-white p-4 md:p-4 rounded-full shadow-[0_4px_20px_rgba(43,76,62,0.3)] border border-forest-green/20 text-forest-green hover:bg-forest-green hover:text-white transition-all flex items-center justify-center group opacity-0 translate-y-10 select-none">
         <i data-lucide="music" id="music-icon" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
     </button>
     
-    <!-- SỬA LỖI AUDIO: Chuyển sang CDN jsDelivr để hỗ trợ tính năng tua nhạc (Range Requests), không bị kẹt khi nhảy đến giây 70 -->
-    <audio id="bgm" loop preload="auto">
+    <!-- Audio -->
+    <audio id="bgm" loop preload="auto" playsinline>
         <source src="https://cdn.jsdelivr.net/gh/fitallest/-nh@main/image/audio.mp3" type="audio/mpeg">
     </audio>
 
@@ -227,7 +230,7 @@
         <div class="absolute inset-0 bg-black/40"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-[#FEFAF6] via-transparent to-transparent opacity-100"></div>
         
-        <div class="relative z-10 text-center text-white px-4 reveal active w-full pt-10">
+        <div class="relative z-10 text-center text-white px-4 reveal active w-full pt-10 select-none">
             <div id="personal-greeting" class="hidden mb-6 py-2 px-6 bg-black/30 backdrop-blur-md rounded-full border border-white/20 inline-block font-serif text-lg md:text-xl shadow-sm text-white"></div>
 
             <p class="uppercase tracking-[0.4em] text-xs md:text-sm mb-4 font-serif drop-shadow-md">S a v e   T h e   D a t e</p>
@@ -238,7 +241,7 @@
             <p class="font-serif italic text-base md:text-2xl drop-shadow-md">We are getting married</p>
             
             <div id="secret-date" class="inline-block cursor-pointer hover:text-gold transition-colors duration-300 rounded-lg p-2 mt-2">
-                <p class="font-serif text-xl md:text-3xl tracking-[0.3em] select-none mt-4 drop-shadow-lg">14 . 03 . 2026</p>
+                <p class="font-serif text-xl md:text-3xl tracking-[0.3em] mt-4 drop-shadow-lg">14 . 03 . 2026</p>
             </div>
         </div>
         
@@ -249,7 +252,7 @@
 
     <!-- INTRODUCTION SECTION -->
     <section class="relative w-full py-20 md:py-24 px-4 bg-cream-bg">
-        <div class="w-full max-w-lg md:max-w-2xl mx-auto mb-10 px-4 reveal relative z-30">
+        <div class="w-full max-w-lg md:max-w-2xl mx-auto mb-10 px-4 reveal relative z-30 select-none">
             <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/hoabr.png" onerror="this.style.display='none'" alt="Border Floral" class="w-full h-auto drop-shadow-sm">
         </div>
 
@@ -271,12 +274,11 @@
             <p class="font-script text-3xl md:text-5xl text-forest-green mb-6 leading-relaxed relative z-30 px-4">"Gặp gỡ là duyên, đồng hành là nợ,<br>và chung bước là sự lựa chọn của cả cuộc đời."</p>
             <div class="w-16 h-[2px] bg-gold mx-auto mb-8 relative z-30"></div>
             
-            <!-- Fix link Line Art -->
-            <div class="my-8 w-full flex justify-center">
+            <div class="my-8 w-full flex justify-center select-none pointer-events-none">
                 <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/Minimalist%20Line%20Art.png" class="w-48 md:w-64 opacity-80 mix-blend-multiply" alt="Line Art" onerror="this.style.display='none'">
             </div>
 
-            <div class="flex items-center justify-center gap-4 md:gap-8 font-serif text-text-brown border-y border-forest-green/20 py-4 md:py-5 w-max mx-auto px-6 md:px-10 relative overflow-hidden z-30">
+            <div class="flex items-center justify-center gap-4 md:gap-8 font-serif text-text-brown border-y border-forest-green/20 py-4 md:py-5 w-max mx-auto px-6 md:px-10 relative overflow-hidden z-30 select-none">
                 <span class="uppercase tracking-widest text-xs md:text-xl font-medium relative z-10">Tháng 03</span>
                 <div class="w-[1px] h-8 md:h-12 bg-forest-green relative z-10"></div>
                 <span class="text-3xl md:text-5xl text-gold font-medium relative z-10">10 <span class="text-xl md:text-2xl text-forest-green">&</span> 14</span>
@@ -287,7 +289,7 @@
     </section>
 
     <!-- COUNTDOWN SECTION -->
-    <section class="py-20 md:py-28 bg-[#48875E] text-white text-center relative z-10 shadow-inner reveal w-full overflow-hidden">
+    <section class="py-20 md:py-28 bg-[#48875E] text-white text-center relative z-10 shadow-inner reveal w-full overflow-hidden select-none">
         <div class="relative z-10 max-w-5xl mx-auto">
             <p class="font-script text-4xl md:text-6xl text-[#F9F8F3] mb-12 md:mb-16 drop-shadow-sm opacity-90">Cùng đếm ngược thời gian...</p>
             
@@ -318,44 +320,43 @@
     <!-- GALLERY SECTION -->
     <section class="py-24 md:py-32 px-4 overflow-hidden relative z-10">
         <div class="max-w-6xl mx-auto relative">
-            <div class="text-center mb-16 md:mb-20 reveal">
+            <div class="text-center mb-16 md:mb-20 reveal select-none">
                 <h2 class="font-script text-5xl md:text-8xl text-forest-green mb-4">Khoảnh Khắc</h2>
                 <div class="w-16 md:w-20 h-[2px] bg-gold mx-auto mb-6"></div>
                 <p class="text-sm md:text-base text-gray-500 italic font-serif px-4">"Lưu giữ vạn khoảnh khắc để làm kỷ niệm cho ngàn năm."</p>
             </div>
             
             <div class="masonry-grid relative mt-8 px-2">
-                <!-- Fix link Washi Tape -->
                 <div class="masonry-item reveal"><div class="bg-white p-3 md:p-4 pb-12 md:pb-16 relative group cursor-pointer shadow-[0_8px_20px_rgba(0,0,0,0.06)] transform transition-transform hover:-translate-y-3 hover:shadow-2xl rotate-[-2deg]">
-                    <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/Washi%20Tape.png" class="absolute -top-3 left-1/2 -translate-x-1/2 w-28 opacity-90 z-20 rotate-2 drop-shadow-sm" alt="Tape" onerror="this.style.display='none'">
-                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/3218.JPG&w=600&output=webp&q=80" alt="Gallery 1" loading="lazy" class="w-full h-auto object-cover block relative z-10">
-                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70">Forever</div>
+                    <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/Washi%20Tape.png" class="absolute -top-3 left-1/2 -translate-x-1/2 w-28 opacity-90 z-20 rotate-2 drop-shadow-sm pointer-events-none" alt="Tape" onerror="this.style.display='none'">
+                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/3218.JPG&w=600&output=webp&q=80" alt="Gallery 1" loading="lazy" class="w-full h-auto object-cover block relative z-10 select-none pointer-events-none">
+                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70 select-none">Forever</div>
                 </div></div>
                 
                 <div class="masonry-item reveal reveal-delay-1"><div class="bg-white p-3 md:p-4 pb-12 md:pb-16 relative group cursor-pointer shadow-[0_8px_20px_rgba(0,0,0,0.06)] transform transition-transform hover:-translate-y-3 hover:shadow-2xl rotate-[3deg]">
-                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/4033.JPG&w=600&output=webp&q=80" alt="Gallery 2" loading="lazy" class="w-full h-auto object-cover block relative z-10">
-                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70">Sweet</div>
+                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/4033.JPG&w=600&output=webp&q=80" alt="Gallery 2" loading="lazy" class="w-full h-auto object-cover block relative z-10 select-none pointer-events-none">
+                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70 select-none">Sweet</div>
                 </div></div>
                 
                 <div class="masonry-item reveal reveal-delay-2"><div class="bg-white p-3 md:p-4 pb-12 md:pb-16 relative group cursor-pointer shadow-[0_8px_20px_rgba(0,0,0,0.06)] transform transition-transform hover:-translate-y-3 hover:shadow-2xl rotate-[-1deg]">
-                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/4244.JPG&w=600&output=webp&q=80" alt="Gallery 3" loading="lazy" class="w-full h-auto object-cover block relative z-10">
-                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70">Love</div>
+                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/4244.JPG&w=600&output=webp&q=80" alt="Gallery 3" loading="lazy" class="w-full h-auto object-cover block relative z-10 select-none pointer-events-none">
+                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70 select-none">Love</div>
                 </div></div>
                 
                 <div class="masonry-item reveal"><div class="bg-white p-3 md:p-4 pb-12 md:pb-16 relative group cursor-pointer shadow-[0_8px_20px_rgba(0,0,0,0.06)] transform transition-transform hover:-translate-y-3 hover:shadow-2xl rotate-[2deg]">
-                    <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/Washi%20Tape.png" class="absolute -top-3 -right-2 w-28 opacity-90 z-20 rotate-[35deg] drop-shadow-sm" alt="Tape" onerror="this.style.display='none'">
-                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/4515.JPG&w=600&output=webp&q=80" alt="Gallery 4" loading="lazy" class="w-full h-auto object-cover block relative z-10">
-                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70">Smile</div>
+                    <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/Washi%20Tape.png" class="absolute -top-3 -right-2 w-28 opacity-90 z-20 rotate-[35deg] drop-shadow-sm pointer-events-none" alt="Tape" onerror="this.style.display='none'">
+                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/4515.JPG&w=600&output=webp&q=80" alt="Gallery 4" loading="lazy" class="w-full h-auto object-cover block relative z-10 select-none pointer-events-none">
+                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70 select-none">Smile</div>
                 </div></div>
                 
                 <div class="masonry-item reveal reveal-delay-1"><div class="bg-white p-3 md:p-4 pb-12 md:pb-16 relative group cursor-pointer shadow-[0_8px_20px_rgba(0,0,0,0.06)] transform transition-transform hover:-translate-y-3 hover:shadow-2xl rotate-[-3deg]">
-                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/4542.JPG&w=600&output=webp&q=80" alt="Gallery 5" loading="lazy" class="w-full h-auto object-cover block relative z-10">
-                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70">Joy</div>
+                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/4542.JPG&w=600&output=webp&q=80" alt="Gallery 5" loading="lazy" class="w-full h-auto object-cover block relative z-10 select-none pointer-events-none">
+                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70 select-none">Joy</div>
                 </div></div>
                 
                 <div class="masonry-item reveal reveal-delay-2"><div class="bg-white p-3 md:p-4 pb-12 md:pb-16 relative group cursor-pointer shadow-[0_8px_20px_rgba(0,0,0,0.06)] transform transition-transform hover:-translate-y-3 hover:shadow-2xl rotate-[1deg]">
-                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/4661.JPG&w=600&output=webp&q=80" alt="Gallery 6" loading="lazy" class="w-full h-auto object-cover block relative z-10">
-                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70">Eternity</div>
+                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/4661.JPG&w=600&output=webp&q=80" alt="Gallery 6" loading="lazy" class="w-full h-auto object-cover block relative z-10 select-none pointer-events-none">
+                    <div class="absolute bottom-3 md:bottom-5 w-full text-center left-0 font-script text-2xl md:text-3xl text-forest-green opacity-70 select-none">Eternity</div>
                 </div></div>
             </div>
         </div>
@@ -363,22 +364,21 @@
 
     <!-- EVENT DETAILS -->
     <section class="py-20 md:py-24 px-4 max-w-5xl mx-auto text-center relative z-10" id="details">
-        <div class="reveal">
+        <div class="reveal select-none">
             <h2 class="font-script text-5xl md:text-8xl text-forest-green mb-4 md:mb-6">Sự kiện</h2>
             <div class="w-16 md:w-20 h-[2px] bg-gold mx-auto mb-16 md:mb-20"></div>
         </div>
         
         <div class="grid md:grid-cols-2 gap-10 md:gap-12 max-w-4xl mx-auto">
             <div class="bg-white/90 backdrop-blur-sm p-8 md:p-12 border border-forest-green/10 shadow-xl relative transition-all hover:-translate-y-2 md:hover:-translate-y-4 duration-500 group reveal reveal-delay-1">
-                <!-- Fix link Nhẫn Cưới -->
-                <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/nhancuoi.png" class="w-12 h-12 md:w-16 md:h-16 absolute top-4 left-4 md:top-6 md:left-6 group-hover:scale-110 transition-transform duration-500 opacity-80 mix-blend-multiply" alt="Nhẫn Cưới">
+                <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/nhancuoi.png" class="w-12 h-12 md:w-16 md:h-16 absolute top-4 left-4 md:top-6 md:left-6 group-hover:scale-110 transition-transform duration-500 opacity-80 mix-blend-multiply pointer-events-none" alt="Nhẫn Cưới">
                 
-                <h3 class="font-serif text-3xl md:text-4xl text-forest-green mb-2 md:mb-3 mt-4 md:mt-6">Lễ Vu Quy</h3>
-                <div class="absolute -top-3 md:-top-4 left-1/2 -translate-x-1/2 bg-forest-green px-4 md:px-6 py-1 md:py-2 text-white text-[10px] md:text-xs tracking-[0.2em] uppercase shadow-md">Nhà Gái</div>
-                <p class="font-bold text-gray-800 text-lg md:text-xl mt-6 md:mt-8">Thứ Ba, 10 Tháng 3, 2026</p>
-                <p class="text-sm md:text-base text-gray-500 mb-4 md:mb-6 italic font-serif">(Nhằm ngày 22/01 Âm lịch)</p>
+                <h3 class="font-serif text-3xl md:text-4xl text-forest-green mb-2 md:mb-3 mt-4 md:mt-6 select-none">Lễ Vu Quy</h3>
+                <div class="absolute -top-3 md:-top-4 left-1/2 -translate-x-1/2 bg-forest-green px-4 md:px-6 py-1 md:py-2 text-white text-[10px] md:text-xs tracking-[0.2em] uppercase shadow-md select-none">Nhà Gái</div>
+                <p class="font-bold text-gray-800 text-lg md:text-xl mt-6 md:mt-8 select-none">Thứ Ba, 10 Tháng 3, 2026</p>
+                <p class="text-sm md:text-base text-gray-500 mb-4 md:mb-6 italic font-serif select-none">(Nhằm ngày 22/01 Âm lịch)</p>
                 <div class="w-12 md:w-16 h-[1px] bg-gold mx-auto mb-6 md:mb-8"></div>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed mb-8 md:mb-10 min-h-[3rem]">Tại tư gia nhà gái<br><span class="font-medium text-gray-800">Hòn Đất, An Giang</span></p>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed mb-8 md:mb-10 min-h-[3rem] select-none">Tại tư gia nhà gái<br><span class="font-medium text-gray-800">Hòn Đất, An Giang</span></p>
                 
                 <a href="#" target="_blank" class="inline-flex items-center gap-2 border border-forest-green text-forest-green px-6 md:px-8 py-2 md:py-3 text-xs md:text-sm uppercase tracking-widest hover:bg-forest-green hover:text-white transition duration-300">
                     <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/Watercolor%20Map%20Pin.png" class="w-6 h-6 opacity-90 mix-blend-multiply group-hover:brightness-200 transition-all drop-shadow-sm" alt="Map">
@@ -387,15 +387,14 @@
             </div>
 
             <div class="bg-white/90 backdrop-blur-sm p-8 md:p-12 border border-forest-green/10 shadow-xl relative transition-all hover:-translate-y-2 md:hover:-translate-y-4 duration-500 group reveal reveal-delay-2">
-                <!-- Fix link Ly Rượu -->
-                <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/lyruou.png" class="w-12 h-12 md:w-16 md:h-16 absolute top-4 left-4 md:top-6 md:left-6 group-hover:scale-110 transition-transform duration-500 opacity-80 mix-blend-multiply" alt="Ly Rượu">
+                <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/lyruou.png" class="w-12 h-12 md:w-16 md:h-16 absolute top-4 left-4 md:top-6 md:left-6 group-hover:scale-110 transition-transform duration-500 opacity-80 mix-blend-multiply pointer-events-none" alt="Ly Rượu">
                 
-                <h3 class="font-serif text-3xl md:text-4xl text-forest-green mb-2 md:mb-3 mt-4 md:mt-6">Lễ Thành Hôn</h3>
-                <div class="absolute -top-3 md:-top-4 left-1/2 -translate-x-1/2 bg-forest-green px-4 md:px-6 py-1 md:py-2 text-white text-[10px] md:text-xs tracking-[0.2em] uppercase shadow-md">Nhà Trai</div>
-                <p class="font-bold text-gray-800 text-lg md:text-xl mt-6 md:mt-8">Thứ Bảy, 14 Tháng 3, 2026</p>
-                <p class="text-sm md:text-base text-gray-500 mb-4 md:mb-6 italic font-serif">(Nhằm ngày 26/01 Âm lịch)</p>
+                <h3 class="font-serif text-3xl md:text-4xl text-forest-green mb-2 md:mb-3 mt-4 md:mt-6 select-none">Lễ Thành Hôn</h3>
+                <div class="absolute -top-3 md:-top-4 left-1/2 -translate-x-1/2 bg-forest-green px-4 md:px-6 py-1 md:py-2 text-white text-[10px] md:text-xs tracking-[0.2em] uppercase shadow-md select-none">Nhà Trai</div>
+                <p class="font-bold text-gray-800 text-lg md:text-xl mt-6 md:mt-8 select-none">Thứ Bảy, 14 Tháng 3, 2026</p>
+                <p class="text-sm md:text-base text-gray-500 mb-4 md:mb-6 italic font-serif select-none">(Nhằm ngày 26/01 Âm lịch)</p>
                 <div class="w-12 md:w-16 h-[1px] bg-gold mx-auto mb-6 md:mb-8"></div>
-                <p class="text-gray-600 text-sm md:text-base leading-relaxed mb-8 md:mb-10 min-h-[3rem]">Tại trung tâm tiệc cưới<br><span class="font-medium text-gray-800">Bình Minh, Vĩnh Long</span></p>
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed mb-8 md:mb-10 min-h-[3rem] select-none">Tại trung tâm tiệc cưới<br><span class="font-medium text-gray-800">Bình Minh, Vĩnh Long</span></p>
                 <a href="#" target="_blank" class="inline-flex items-center gap-2 border border-forest-green text-forest-green px-6 md:px-8 py-2 md:py-3 text-xs md:text-sm uppercase tracking-widest hover:bg-forest-green hover:text-white transition duration-300">
                     <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/Watercolor%20Map%20Pin.png" class="w-6 h-6 opacity-90 mix-blend-multiply group-hover:brightness-200 transition-all drop-shadow-sm" alt="Map">
                     Xem Bản Đồ
@@ -406,7 +405,7 @@
 
     <!-- RSVP ENVELOPE -->
     <section class="py-20 md:py-24 px-4 max-w-4xl mx-auto relative z-10 reveal">
-        <div class="text-center mb-16 md:mb-24 relative z-20">
+        <div class="text-center mb-16 md:mb-24 relative z-20 select-none">
             <h2 class="font-script text-5xl md:text-8xl text-forest-green mb-2 md:mb-4">Mở thiệp nhé!</h2>
             <p class="text-xs md:text-sm text-text-brown/60 uppercase tracking-widest">Xác Nhận Tham Dự - R.S.V.P</p>
         </div>
@@ -420,7 +419,7 @@
             <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/hoa2.png" onerror="this.style.display='none'" class="absolute -bottom-12 md:-bottom-24 left-1/2 -translate-x-1/2 w-32 md:w-64 z-50 pointer-events-none rotate-[45deg] drop-shadow-xl group-hover:-translate-y-2 md:group-hover:-translate-y-4 transition-transform duration-700" alt="Envelope Floral Bottom">
 
             <div class="bg-cream-bg p-6 md:p-14 relative z-40 mt-10 md:mt-20 mx-2 mb-2 rounded-sm border border-gold/20 shadow-inner group-hover:z-50 transition-all duration-300">
-                <p class="font-script text-3xl md:text-4xl text-forest-green text-center mb-8 md:mb-10">Kính gửi người thương,</p>
+                <p class="font-script text-3xl md:text-4xl text-forest-green text-center mb-8 md:mb-10 select-none">Kính gửi người thương,</p>
                 <form id="rsvp-form" class="space-y-6 md:space-y-8" onsubmit="handleRSVP(event)">
                     <div class="grid md:grid-cols-2 gap-6 md:gap-8">
                         <div><input type="text" id="name" required class="w-full border-b border-forest-green/30 py-2 focus:outline-none focus:border-gold transition-colors bg-transparent text-sm md:text-base placeholder-gray-400" placeholder="Tên của bạn *"></div>
@@ -459,7 +458,7 @@
 
     <!-- LIVE GUESTBOOK -->
     <section class="py-10 md:py-12 bg-cream-bg relative z-10 mt-10 md:mt-16 overflow-hidden">
-        <div class="text-center mb-6 md:mb-8">
+        <div class="text-center mb-6 md:mb-8 select-none">
             <h3 class="font-serif text-xl md:text-2xl text-forest-green italic">Sổ lưu bút</h3>
         </div>
         <div class="ticker-wrap w-full overflow-hidden">
@@ -495,22 +494,23 @@
     <!-- DIGITAL GIFT -->
     <section class="py-20 md:py-24 bg-cream-bg text-forest-green px-4 text-center relative z-10 border-t border-forest-green/10">
         <div class="max-w-4xl mx-auto">
-            <div class="reveal">
+            <div class="reveal select-none">
                 <h2 class="font-script text-5xl md:text-6xl mb-4 text-gold-glitter">Hộp Quà Yêu Thương</h2>
                 <p class="text-sm md:text-base text-gray-500 mb-12 md:mb-16 font-serif italic">"Chạm vào thẻ để quét mã QR nhé!"</p>
             </div>
             <div class="grid md:grid-cols-2 gap-8 md:gap-10">
                 <div class="flip-card reveal reveal-delay-1 cursor-pointer">
                     <div class="flip-card-inner">
-                        <div class="flip-card-front bg-white border border-forest-green/20 shadow-xl flex flex-col items-center justify-center p-6 md:p-8">
+                        <div class="flip-card-front bg-white border border-forest-green/20 shadow-xl flex flex-col items-center justify-center p-6 md:p-8 select-none">
                             <i data-lucide="gift" class="w-12 h-12 md:w-16 md:h-16 text-gold mb-4 md:mb-6"></i>
                             <h3 class="font-serif text-2xl md:text-3xl text-forest-green mb-2">Đến Chú rể</h3>
                             <p class="text-xs md:text-sm text-gray-400 uppercase tracking-widest">Chạm để mở</p>
                         </div>
                         <div class="flip-card-back bg-forest-green text-white border border-gold/30 shadow-2xl p-4 md:p-6">
-                            <div class="w-32 h-32 md:w-40 md:h-40 bg-white mx-auto mb-4 md:mb-6 p-2 rounded-lg">
+                            <div class="w-32 h-32 md:w-40 md:h-40 bg-white mx-auto mb-4 md:mb-6 p-2 rounded-lg pointer-events-none">
                                 <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/maqrnatphi.jpg&w=300&output=webp&q=100" alt="QR Nhất Phi" class="w-full h-full object-contain">
                             </div>
+                            <!-- Bank info can be selected to copy -->
                             <p class="text-[10px] md:text-xs uppercase tracking-widest mb-1 text-gold">Vietinbank</p>
                             <p class="font-bold text-lg md:text-xl tracking-wider mb-1">1018 7236 0428</p>
                             <p class="text-sm md:text-base font-script">Cao Nhất Phi</p>
@@ -519,13 +519,13 @@
                 </div>
                 <div class="flip-card reveal reveal-delay-2 cursor-pointer">
                     <div class="flip-card-inner">
-                        <div class="flip-card-front bg-white border border-forest-green/20 shadow-xl flex flex-col items-center justify-center p-6 md:p-8">
+                        <div class="flip-card-front bg-white border border-forest-green/20 shadow-xl flex flex-col items-center justify-center p-6 md:p-8 select-none">
                             <i data-lucide="heart-handshake" class="w-12 h-12 md:w-16 md:h-16 text-gold mb-4 md:mb-6"></i>
                             <h3 class="font-serif text-2xl md:text-3xl text-forest-green mb-2">Đến Cô dâu</h3>
                             <p class="text-xs md:text-sm text-gray-400 uppercase tracking-widest">Chạm để mở</p>
                         </div>
                         <div class="flip-card-back bg-forest-green text-white border border-gold/30 shadow-2xl p-4 md:p-6">
-                            <div class="w-32 h-32 md:w-40 md:h-40 bg-white mx-auto mb-4 md:mb-6 p-2 rounded-lg">
+                            <div class="w-32 h-32 md:w-40 md:h-40 bg-white mx-auto mb-4 md:mb-6 p-2 rounded-lg pointer-events-none">
                                 <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/-nh/main/image/maqrduonglua.jpg&w=300&output=webp&q=100" alt="QR Dương Lụa" class="w-full h-full object-contain">
                             </div>
                             <p class="text-[10px] md:text-xs uppercase tracking-widest mb-1 text-gold">MB Bank</p>
@@ -539,7 +539,7 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="bg-forest-dark py-20 md:py-28 text-center relative z-10 overflow-hidden px-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+    <footer class="bg-forest-dark py-20 md:py-28 text-center relative z-10 overflow-hidden px-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] select-none">
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
         <img src="https://raw.githubusercontent.com/fitallest/filua/main/image/hoa/hoa2.png" onerror="this.style.display='none'" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xl opacity-10 pointer-events-none mix-blend-screen" alt="Footer Background">
 
@@ -559,243 +559,237 @@
             <div class="aspect-video w-full rounded-lg overflow-hidden bg-black">
                 <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0" title="YouTube" frameborder="0" allowfullscreen></iframe>
             </div>
-            <p class="text-center font-script text-2xl text-forest-green mt-4 mb-2">Bị lừa rồi nha! 😂</p>
+            <p class="text-center font-script text-2xl text-forest-green mt-4 mb-2 select-none">Bị lừa rồi nha! 😂</p>
         </div>
     </div>
 
-    <!-- Scripts bọc trong DOMContentLoaded để chống lỗi sập trang (WSOD) trên iOS -->
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            lucide.createIcons();
+        lucide.createIcons();
 
-            const setDvh = () => { document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`); };
-            window.addEventListener('resize', setDvh); setDvh();
+        const setDvh = () => { document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`); };
+        window.addEventListener('resize', setDvh); setDvh();
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const guestName = urlParams.get('to');
-            if (guestName) {
-                const greetingEl = document.getElementById('personal-greeting');
-                greetingEl.innerHTML = `Thân mời <span class="text-gold font-bold italic ml-1">${guestName}</span>`;
-                greetingEl.classList.remove('hidden');
-            }
+        const urlParams = new URLSearchParams(window.location.search);
+        const guestName = urlParams.get('to');
+        if (guestName) {
+            const greetingEl = document.getElementById('personal-greeting');
+            greetingEl.innerHTML = `Thân mời <span class="text-gold font-bold italic ml-1">${guestName}</span>`;
+            greetingEl.classList.remove('hidden');
+        }
 
-            const preloader = document.getElementById('preloader');
-            const unlockBtn = document.getElementById('unlock-btn');
-            const musicBtn = document.getElementById('music-btn');
-            const audio = document.getElementById('bgm');
+        const preloader = document.getElementById('preloader');
+        const unlockBtn = document.getElementById('unlock-btn');
+        const musicBtn = document.getElementById('music-btn');
+        const audio = document.getElementById('bgm');
+        
+        let isPlaying = false;
+        let isUnlocked = false; 
+        let isToggling = false; 
+
+        const fadeInAudio = () => {
+            let vol = 0;
+            audio.volume = vol;
+            const fadeInterval = setInterval(() => {
+                vol += 0.1; 
+                if (vol >= 1) {
+                    audio.volume = 1;
+                    clearInterval(fadeInterval);
+                } else {
+                    audio.volume = vol;
+                }
+            }, 50); 
+        };
+
+        const unlockAction = async (e) => {
+            if (e) e.preventDefault(); 
+            if (isUnlocked) return; 
             
-            let isPlaying = false;
-            let isUnlocked = false; 
-            let isToggling = false; 
+            const sealImg = document.getElementById('seal-img');
+            if(sealImg) sealImg.style.opacity = '0.5';
 
-            const fadeInAudio = () => {
-                let vol = 0;
-                audio.volume = vol;
-                const fadeInterval = setInterval(() => {
-                    vol += 0.1; 
-                    if (vol >= 1) {
-                        audio.volume = 1;
-                        clearInterval(fadeInterval);
-                    } else {
-                        audio.volume = vol;
-                    }
-                }, 50); 
-            };
-
-            const unlockAction = async (e) => {
-                if (e) e.preventDefault(); 
-                if (isUnlocked) return; 
+            try {
+                audio.volume = 0; 
+                await audio.play(); 
+                audio.currentTime = 70; 
                 
-                const sealImg = document.getElementById('seal-img');
-                if(sealImg) sealImg.style.opacity = '0.5';
+                isPlaying = true;
+                document.getElementById('music-icon').setAttribute('data-lucide', 'music');
+                fadeInAudio(); 
+            } catch (err) {
+                console.log("Auto-play issue, user can click to play later:", err);
+                isPlaying = false;
+                document.getElementById('music-icon').setAttribute('data-lucide', 'volume-x');
+            } finally {
+                isUnlocked = true;
+                lucide.createIcons();
+                
+                window.scrollTo(0, 0);
+                
+                document.body.classList.remove('overflow-hidden');
+                if(preloader) preloader.classList.add('opacity-0', '-translate-y-full');
+                if(musicBtn) musicBtn.classList.remove('opacity-0', 'translate-y-10'); 
+                setTimeout(() => { if(preloader && preloader.parentNode) preloader.remove(); }, 1000); 
+            }
+        };
+
+        if(unlockBtn) {
+            unlockBtn.addEventListener('click', unlockAction);
+            unlockBtn.addEventListener('touchstart', unlockAction, { passive: false });
+        }
+
+        if(musicBtn) {
+            musicBtn.addEventListener('click', async () => {
+                if (isToggling) return; 
+                isToggling = true;
 
                 try {
-                    audio.volume = 0; 
-                    await audio.play(); 
-                    audio.currentTime = 70; 
-                    
-                    isPlaying = true;
-                    document.getElementById('music-icon').setAttribute('data-lucide', 'music');
-                    fadeInAudio(); 
-                } catch (err) {
-                    console.log("Auto-play issue, user can click to play later:", err);
-                    isPlaying = false;
-                    document.getElementById('music-icon').setAttribute('data-lucide', 'volume-x');
-                } finally {
-                    isUnlocked = true;
+                    if (isPlaying) { 
+                        audio.pause(); 
+                        isPlaying = false;
+                        document.getElementById('music-icon').setAttribute('data-lucide', 'volume-x');
+                    } else { 
+                        audio.volume = 0;
+                        await audio.play(); 
+                        isPlaying = true;
+                        document.getElementById('music-icon').setAttribute('data-lucide', 'music');
+                        fadeInAudio();
+                    }
                     lucide.createIcons();
-                    
-                    // Thay behavior instant bằng hàm scrollTo an toàn nhất cho mobile
-                    window.scrollTo(0, 0);
-                    
-                    document.body.classList.remove('overflow-hidden');
-                    if(preloader) preloader.classList.add('opacity-0', '-translate-y-full');
-                    if(musicBtn) musicBtn.classList.remove('opacity-0', 'translate-y-10'); 
-                    setTimeout(() => { if(preloader && preloader.parentNode) preloader.remove(); }, 1000); 
+                } catch (e) {
+                    console.log("Toggle Error: ", e);
+                } finally {
+                    isToggling = false; 
                 }
-            };
-
-            if(unlockBtn) {
-                unlockBtn.addEventListener('click', unlockAction);
-                unlockBtn.addEventListener('touchstart', unlockAction, { passive: false });
-            }
-
-            if(musicBtn) {
-                musicBtn.addEventListener('click', async () => {
-                    if (isToggling) return; 
-                    isToggling = true;
-
-                    try {
-                        if (isPlaying) { 
-                            audio.pause(); 
-                            isPlaying = false;
-                            document.getElementById('music-icon').setAttribute('data-lucide', 'volume-x');
-                        } else { 
-                            audio.volume = 0;
-                            await audio.play(); 
-                            isPlaying = true;
-                            document.getElementById('music-icon').setAttribute('data-lucide', 'music');
-                            fadeInAudio();
-                        }
-                        lucide.createIcons();
-                    } catch (e) {
-                        console.log("Toggle Error: ", e);
-                    } finally {
-                        isToggling = false; 
-                    }
-                });
-            }
-
-            let clickCount = 0;
-            const secretDate = document.getElementById('secret-date');
-            const modal = document.getElementById('easter-egg-modal');
-            const closeModal = document.getElementById('close-modal');
-
-            if(secretDate && modal) {
-                secretDate.addEventListener('click', () => {
-                    clickCount++;
-                    if(clickCount === 3) {
-                        modal.classList.remove('hidden'); modal.classList.add('flex'); clickCount = 0;
-                        if(isPlaying) { 
-                            audio.pause(); 
-                            document.getElementById('music-icon').setAttribute('data-lucide', 'volume-x'); 
-                            lucide.createIcons(); 
-                            isPlaying = false; 
-                        }
-                    }
-                });
-            }
-
-            if(closeModal && modal) {
-                closeModal.addEventListener('click', () => {
-                    modal.classList.add('hidden'); modal.classList.remove('flex');
-                    const iframe = modal.querySelector('iframe'); 
-                    if(iframe) iframe.src = iframe.src;
-                });
-            }
-
-            const flipCards = document.querySelectorAll('.flip-card');
-            flipCards.forEach(card => {
-                card.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    this.classList.toggle('flipped');
-                });
             });
+        }
 
-            // Gắn function xử lý form vào window để có thể gọi từ onsubmit trong HTML
-            window.handleRSVP = function(event) {
-                event.preventDefault();
-                const btn = document.getElementById('submit-btn');
-                const originalText = btn.innerText;
-                const nameInput = document.getElementById('name').value;
-                const messageInput = document.getElementById('message').value;
-                
-                btn.innerText = "Đang gửi..."; btn.classList.add('opacity-70', 'cursor-not-allowed');
+        let clickCount = 0;
+        const secretDate = document.getElementById('secret-date');
+        const modal = document.getElementById('easter-egg-modal');
+        const closeModal = document.getElementById('close-modal');
 
-                setTimeout(() => {
-                    if(messageInput.trim() !== "") {
-                        const newWish = `<div class="wish-card border-gold border flex-shrink-0"><p class="font-serif text-gold font-bold mb-1">${nameInput}</p><p class="text-xs md:text-sm text-gray-600 italic">"${messageInput}"</p></div>`;
-                        const ticker = document.getElementById('guestbook-ticker');
-                        if(ticker) ticker.insertAdjacentHTML('afterbegin', newWish);
+        if(secretDate && modal) {
+            secretDate.addEventListener('click', () => {
+                clickCount++;
+                if(clickCount === 3) {
+                    modal.classList.remove('hidden'); modal.classList.add('flex'); clickCount = 0;
+                    if(isPlaying) { 
+                        audio.pause(); 
+                        document.getElementById('music-icon').setAttribute('data-lucide', 'volume-x'); 
+                        lucide.createIcons(); 
+                        isPlaying = false; 
                     }
+                }
+            });
+        }
 
-                    btn.innerText = "Đã Gửi Thành Công! ✨";
-                    btn.classList.remove('opacity-70', 'cursor-not-allowed');
-                    btn.classList.replace('bg-forest-green', 'bg-gold');
-                    
-                    setTimeout(() => { document.getElementById('rsvp-form').reset(); btn.innerText = originalText; btn.classList.replace('bg-gold', 'bg-forest-green'); }, 4000);
-                }, 1000);
-            };
+        if(closeModal && modal) {
+            closeModal.addEventListener('click', () => {
+                modal.classList.add('hidden'); modal.classList.remove('flex');
+                const iframe = modal.querySelector('iframe'); 
+                if(iframe) iframe.src = iframe.src;
+            });
+        }
 
-            function initParticles() {
-                setInterval(() => {
-                    if(document.hidden) return;
-                    const particle = document.createElement('div');
-                    
-                    const rand = Math.random();
-                    let pType = 'sparkle';
-                    if (rand > 0.85) {
-                        pType = 'cupid-fly';       
-                    } else if (rand > 0.40) {
-                        pType = 'drawn-heart';  
-                    }
-                    
-                    particle.className = `particle ${pType}`;
-                    particle.style.left = Math.random() * 100 + 'vw';
-                    const fallDuration = Math.random() * 8 + 10; 
-                    particle.style.animationDuration = `${fallDuration}s`;
-                    
-                    if(pType === 'cupid-fly') {
-                        const size = Math.random() * 20 + 25; 
-                        particle.style.width = size + 'px'; 
-                        particle.style.height = size + 'px';
-                        particle.style.opacity = Math.random() * 0.4 + 0.3; 
-                    } else if (pType === 'drawn-heart') {
-                        const size = Math.random() * 15 + 10; 
-                        particle.style.width = size + 'px'; 
-                        particle.style.height = size + 'px';
-                        particle.style.opacity = Math.random() * 0.5 + 0.3; 
-                    }
-                    
-                    document.body.appendChild(particle);
-                    setTimeout(() => particle.remove(), fallDuration * 1000);
-                }, 300); 
-            }
-            initParticles();
+        const flipCards = document.querySelectorAll('.flip-card');
+        flipCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('flipped');
+            });
+        });
 
-            const revealElements = document.querySelectorAll('.reveal');
-            const revealObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); } });
-            }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
-            revealElements.forEach(el => revealObserver.observe(el));
-
-            // Fix lỗi định dạng ngày tháng trên iOS (Sử dụng ISO format)
-            const countDownDate = new Date("2026-03-14T11:00:00").getTime();
+        window.handleRSVP = function(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const originalText = btn.innerText;
+            const nameInput = document.getElementById('name').value;
+            const messageInput = document.getElementById('message').value;
             
-            const countdownTimer = setInterval(function() {
-                const now = new Date().getTime();
-                const distance = countDownDate - now;
-                const countdownEl = document.getElementById("countdown");
-                
-                if(!countdownEl) return;
+            btn.innerText = "Đang gửi..."; btn.classList.add('opacity-70', 'cursor-not-allowed');
 
-                if (distance < 0) {
-                    clearInterval(countdownTimer);
-                    countdownEl.innerHTML = "<div class='text-2xl md:text-5xl text-gold-glitter font-script px-4 py-8'>Happy Wedding Day! 🎉</div>";
-                    return;
+            setTimeout(() => {
+                if(messageInput.trim() !== "") {
+                    const newWish = `<div class="wish-card border-gold border flex-shrink-0"><p class="font-serif text-gold font-bold mb-1">${nameInput}</p><p class="text-xs md:text-sm text-gray-600 italic">"${messageInput}"</p></div>`;
+                    const ticker = document.getElementById('guestbook-ticker');
+                    if(ticker) ticker.insertAdjacentHTML('afterbegin', newWish);
+                }
+
+                btn.innerText = "Đã Gửi Thành Công! ✨";
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                btn.classList.replace('bg-forest-green', 'bg-gold');
+                
+                setTimeout(() => { document.getElementById('rsvp-form').reset(); btn.innerText = originalText; btn.classList.replace('bg-gold', 'bg-forest-green'); }, 4000);
+            }, 1000);
+        };
+
+        function initParticles() {
+            setInterval(() => {
+                if(document.hidden) return;
+                const particle = document.createElement('div');
+                
+                const rand = Math.random();
+                let pType = 'sparkle';
+                if (rand > 0.85) {
+                    pType = 'cupid-fly';       
+                } else if (rand > 0.40) {
+                    pType = 'drawn-heart';  
                 }
                 
-                const daysEl = document.getElementById("days");
-                const hoursEl = document.getElementById("hours");
-                const minutesEl = document.getElementById("minutes");
-                const secondsEl = document.getElementById("seconds");
+                particle.className = `particle ${pType}`;
+                particle.style.left = Math.random() * 100 + 'vw';
+                const fallDuration = Math.random() * 8 + 10; 
+                particle.style.animationDuration = `${fallDuration}s`;
+                
+                if(pType === 'cupid-fly') {
+                    const size = Math.random() * 20 + 25; 
+                    particle.style.width = size + 'px'; 
+                    particle.style.height = size + 'px';
+                    particle.style.opacity = Math.random() * 0.4 + 0.3; 
+                } else if (pType === 'drawn-heart') {
+                    const size = Math.random() * 15 + 10; 
+                    particle.style.width = size + 'px'; 
+                    particle.style.height = size + 'px';
+                    particle.style.opacity = Math.random() * 0.5 + 0.3; 
+                }
+                
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), fallDuration * 1000);
+            }, 300); 
+        }
+        initParticles();
 
-                if(daysEl) daysEl.innerHTML = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-                if(hoursEl) hoursEl.innerHTML = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-                if(minutesEl) minutesEl.innerHTML = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-                if(secondsEl) secondsEl.innerHTML = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
-            }, 1000);
-        });
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); } });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        const countDownDate = new Date("2026-03-14T11:00:00").getTime();
+        
+        const countdownTimer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+            const countdownEl = document.getElementById("countdown");
+            
+            if(!countdownEl) return;
+
+            if (distance < 0) {
+                clearInterval(countdownTimer);
+                countdownEl.innerHTML = "<div class='text-2xl md:text-5xl text-gold-glitter font-script px-4 py-8'>Happy Wedding Day! 🎉</div>";
+                return;
+            }
+            
+            const daysEl = document.getElementById("days");
+            const hoursEl = document.getElementById("hours");
+            const minutesEl = document.getElementById("minutes");
+            const secondsEl = document.getElementById("seconds");
+
+            if(daysEl) daysEl.innerHTML = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            if(hoursEl) hoursEl.innerHTML = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            if(minutesEl) minutesEl.innerHTML = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            if(secondsEl) secondsEl.innerHTML = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }, 1000);
     </script>
 </body>
 </html>
