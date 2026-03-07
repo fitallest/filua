@@ -476,7 +476,6 @@
                             <div class="w-32 h-32 md:w-40 md:h-40 bg-white mx-auto mb-4 md:mb-6 p-2 rounded-lg pointer-events-none">
                                 <img src="https://wsrv.nl/?url=raw.githubusercontent.com/fitallest/filua/main/image/maqrnatphi.jpg&w=300&output=webp&q=100" alt="QR Nhất Phi" class="w-full h-full object-contain">
                             </div>
-                            <!-- Bank info can be selected to copy -->
                             <p class="text-[10px] md:text-xs uppercase tracking-widest mb-1 text-gold">Vietinbank</p>
                             <p class="font-bold text-lg md:text-xl tracking-wider mb-1">1018 7236 0428</p>
                             <p class="text-sm md:text-base font-script">Cao Nhất Phi</p>
@@ -536,7 +535,6 @@
             const setDvh = () => { document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`); };
             window.addEventListener('resize', setDvh); setDvh();
 
-            // Lấy tên khách mời từ URL parameters (nếu có)
             try {
                 const urlParams = new URLSearchParams(window.location.search);
                 const guestName = urlParams.get('to');
@@ -566,7 +564,7 @@
                 audio.volume = vol;
                 const fadeInterval = setInterval(() => {
                     vol += 0.1; 
-                    if (vol >= 1) {
+                    if (vol >= 2) {
                         audio.volume = 1;
                         clearInterval(fadeInterval);
                     } else {
@@ -575,21 +573,20 @@
                 }, 50); 
             };
 
-            // XỬ LÝ SỰ KIỆN CHẠM: ƯU TIÊN MEDIA LÊN HÀNG ĐẦU
+            // XỬ LÝ SỰ KIỆN CHẠM: ÉP PHÁT NHẠC Ở GIÂY 70 NGAY LẬP TỨC
             const unlockAction = (e) => {
                 if (e && e.type !== 'touchend') e.preventDefault(); 
                 if (isUnlocked) return; 
-                isUnlocked = true; // Khóa double-click ngay lập tức
+                isUnlocked = true;
                 
-                // BƯỚC 1: KÍCH NỔ ÂM THANH NGAY TỨC KHẮC
+                // BƯỚC 1: KÍCH NỔ ÂM THANH TRƯỚC TIÊN TẠI MỐC 70S
                 if (audio) {
                     audio.volume = 0; 
-                    const playPromise = audio.play(); // Đánh thức Audio API ngay khoảnh khắc ngón tay chạm
+                    audio.currentTime = 70; // SET MỐC 70s TRƯỚC KHI PLAY ĐỂ KHÔNG BỊ KHỰNG
+                    const playPromise = audio.play(); 
                     
                     if (playPromise !== undefined) {
                         playPromise.then(() => {
-                            // Cấp quyền phát thành công -> Tua và hiện icon nhạc
-                            audio.currentTime = 70; 
                             isPlaying = true;
                             const musicIcon = document.getElementById('music-icon');
                             if(musicIcon) {
@@ -609,7 +606,7 @@
                     }
                 }
 
-                // BƯỚC 2: XỬ LÝ GIAO DIỆN (Thực thi sau khi luồng Media đã được nhả)
+                // BƯỚC 2: XỬ LÝ GIAO DIỆN
                 const sealImg = document.getElementById('seal-img');
                 if(sealImg) sealImg.style.opacity = '0.5';
 
@@ -626,7 +623,6 @@
 
             if(unlockBtn) {
                 unlockBtn.addEventListener('click', unlockAction);
-                // SỬA LỖI: Dùng touchend cho các thiết bị Apple để tăng tỷ lệ được cấp quyền Media
                 unlockBtn.addEventListener('touchend', unlockAction, { passive: false });
             }
 
